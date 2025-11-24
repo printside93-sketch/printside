@@ -48,8 +48,12 @@ CREATE TABLE produits (
     description TEXT,
     prix_vente DECIMAL(10,2) NOT NULL,
     prix_achat DECIMAL(10,2),
-    unite VARCHAR(50) DEFAULT 'unite',
-    date_creation TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    fournisseur_id INT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+    FOREIGN KEY (fournisseur_id) REFERENCES fournisseurs(id)
+        ON DELETE SET NULL
+        ON UPDATE CASCADE
 );
 
 -- ---------------------
