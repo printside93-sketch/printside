@@ -73,12 +73,14 @@ CREATE TABLE stock (
 CREATE TABLE commandes (
     id INT AUTO_INCREMENT PRIMARY KEY,
     client_id INT NOT NULL,
-    utilisateur_id INT,
-    date_commande DATETIME DEFAULT CURRENT_TIMESTAMP,
+    date_commande DATE NOT NULL,
+    statut VARCHAR(50) DEFAULT 'en_attente',
     total DECIMAL(10,2) DEFAULT 0,
-    statut ENUM('en attente', 'en cours', 'terminee', 'livree', 'annulee') DEFAULT 'en attente',
-    FOREIGN KEY (client_id) REFERENCES clients(id),
-    FOREIGN KEY (utilisateur_id) REFERENCES utilisateurs(id)
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+    FOREIGN KEY (client_id) REFERENCES clients(id)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE
 );
 
 -- ---------------------
@@ -88,39 +90,54 @@ CREATE TABLE commande_details (
     id INT AUTO_INCREMENT PRIMARY KEY,
     commande_id INT NOT NULL,
     produit_id INT NOT NULL,
-    quantite INT NOT NULL,
-    prix DECIMAL(10,2) NOT NULL,
-    total_ligne DECIMAL(10,2) NOT NULL,
-    FOREIGN KEY (commande_id) REFERENCES commandes(id) ON DELETE CASCADE,
+    quantite INT NOT NULL DEFAULT 1,
+    prix_unitaire DECIMAL(10,2) NOT NULL,
+    sous_total DECIMAL(10,2) GENERATED ALWAYS AS (quantite * prix_unitaire) STORED,
+
+    FOREIGN KEY (commande_id) REFERENCES commandes(id)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE,
+
     FOREIGN KEY (produit_id) REFERENCES produits(id)
+        ON DELETE RESTRICT
+        ON UPDATE CASCADE
 );
 
 -- ---------------------
 -- Table des achats (stock entrant)
 -- ---------------------
-CREATE TABLE achats (
+CREATE TABLE stock (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    fournisseur_id INT NOT NULL,
-    utilisateur_id INT,
-    date_achat DATETIME DEFAULT CURRENT_TIMESTAMP,
-    total DECIMAL(10,2) DEFAULT 0,
-    FOREIGN KEY (fournisseur_id) REFERENCES fournisseurs(id),
-    FOREIGN KEY (utilisateur_id) REFERENCES utilisateurs(id)
+    produit_id INT NOT NULL,
+    quantite INT NOT NULL DEFAULT 0,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+
+    FOREIGN KEY (produit_id) REFERENCES produits(id)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE
 );
 
 -- ---------------------
 -- Détails des achats
 -- ---------------------
-CREATE TABLE achat_details (
+CREATE TABLE achats (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    achat_id INT NOT NULL,
     produit_id INT NOT NULL,
+    fournisseur_id INT NOT NULL,
     quantite INT NOT NULL,
-    prix DECIMAL(10,2) NOT NULL,
-    total_ligne DECIMAL(10,2) NOT NULL,
-    FOREIGN KEY (achat_id) REFERENCES achats(id) ON DELETE CASCADE,
+    prix_achat DECIMAL(10,2) NOT NULL,
+    date_achat DATE NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
     FOREIGN KEY (produit_id) REFERENCES produits(id)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE,
+
+    FOREIGN KEY (fournisseur_id) REFERENCES fournisseurs(id)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE
 );
+
 
 -- =========================================================
 -- FIN DU FICHIER SQL
