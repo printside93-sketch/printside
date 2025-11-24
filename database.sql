@@ -6,13 +6,12 @@
 -- ---------------------
 -- Table des utilisateurs (admin, employés)
 -- ---------------------
-CREATE TABLE utilisateurs (
+CREATE TABLE users (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    nom VARCHAR(100) NOT NULL,
-    email VARCHAR(150) UNIQUE NOT NULL,
-    mot_de_passe VARCHAR(255) NOT NULL,
-    role ENUM('admin', 'employe') DEFAULT 'employe',
-    date_creation TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    username VARCHAR(100) NOT NULL UNIQUE,
+    password_hash VARCHAR(255) NOT NULL,
+    role ENUM('admin', 'employee') DEFAULT 'employee',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 -- ---------------------
