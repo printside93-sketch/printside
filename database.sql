@@ -31,11 +31,13 @@ CREATE TABLE clients (
 -- ---------------------
 CREATE TABLE fournisseurs (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    nom VARCHAR(150) NOT NULL,
-    telephone VARCHAR(30),
-    adresse TEXT,
-    date_creation TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    nom VARCHAR(100) NOT NULL,
+    telephone VARCHAR(20),
+    adresse VARCHAR(255),
+    email VARCHAR(100),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
 
 -- ---------------------
 -- Table des produits / services (impression, photocopie, etc.)
